@@ -123,7 +123,7 @@ readContract 和 contract.read 没什么区别
 #### 源码
 
 这里其实就是，讲整个调用转换为 calldata 在组合整一个交易，有 from 有 to 地址，在区块链执行调用。之后的章节会提到，现在简单看一下就可以
-![calldata](calldata.png)
+![calldata](./image/calldata.png)
 顺便在简单说一下这个 call 函数,这里可以看到，call 中使用的是 eth_call 这个 method
 [https://www.quicknode.com/docs/ethereum/eth_call]  
 简单来说，eth_call 就是执行函数的调用但不上链，不会改变链上状态，所以这也是模拟调用实现 gas 优化的原理(之后会讲到)
@@ -131,4 +131,4 @@ readContract 和 contract.read 没什么区别
 viem 官方文档也提到，This simulateContract function does not require gas to execute and does not change the state of the blockchain. It is almost identical to readContract, but also supports contract write functions.
 本质就是因为 eth_call 执行但不上链，不会改变区块链状态，所以不消耗 gas
 [https://viem.sh/docs/contract/simulateContract]
-![eth_call](eth_call.png)
+![eth_call](./image/eth_call.png)
