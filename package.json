@@ -1,0 +1,23 @@
+{
+  "name": "viem-101",
+  "version": "1.0.0",
+  "description": "这是一个viem的学习手册，打算根据WTF的重学ether.js的课程做成viem的代码。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel8038/viem-101.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daniel8038/viem-101/issues"
+  },
+  "homepage": "https://github.com/daniel8038/viem-101#readme",
+  "dependencies": {
+    "viem": "^2.31.0"
+  }
+}
