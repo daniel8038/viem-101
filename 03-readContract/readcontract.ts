@@ -25,7 +25,11 @@ const main = async () => {
   console.log(`代号: ${weth_totalSupply}`);
   console.log(`总供给: ${formatEther(weth_totalSupply)}`);
   console.log(my_balance);
-
-  
+  const weth_totalSupply2 = await publicClient.readContract({
+    address: WETH_ADDRESS,
+    abi: erc20Abi,
+    functionName: "totalSupply",
+  });
+  console.log(`总供给: ${formatEther(weth_totalSupply2)}`);
 };
 main().catch((err) => console.error(err));

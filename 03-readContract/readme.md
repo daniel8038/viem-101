@@ -52,7 +52,7 @@ const abiERC20 = [
 ];
 ```
 
-### 创建实例
+### 创建实例-1
 
 在 WTF 学习的这一章可以看到，文章中使用了上述的两种 ABI 形式来创建 Contract 实例，但是 Viem 要求使用标准 ABI json 格式
 可以使用 parseAbi 转换为标准格式
@@ -107,3 +107,28 @@ await contract.write.approve([MY_ACCOUNT, 100000000n]);
 //   AccountNotFoundError: Could not find an Account to execute with this Action.
 //   Please provide an Account with the `account` argument on the Action, or by supplying an `account` to the Client.
 ```
+
+### 直接使用 readContract 方法
+
+```ts
+const weth_totalSupply2 = await publicClient.readContract({
+  address: WETH_ADDRESS,
+  abi: erc20Abi,
+  functionName: "totalSupply",
+});
+```
+
+readContract 和 contract.read 没什么区别
+
+#### 源码
+
+这里其实就是，讲整个调用转换为 calldata 在组合整一个交易，有 from 有 to 地址，在区块链执行调用。之后的章节会提到，现在简单看一下就可以
+![calldata](calldata.png)
+顺便在简单说一下这个 call 函数,这里可以看到，call 中使用的是 eth_call 这个 method
+[https://www.quicknode.com/docs/ethereum/eth_call]  
+简单来说，eth_call 就是执行函数的调用但不上链，不会改变链上状态，所以这也是模拟调用实现 gas 优化的原理(之后会讲到)
+
+viem 官方文档也提到，This simulateContract function does not require gas to execute and does not change the state of the blockchain. It is almost identical to readContract, but also supports contract write functions.
+本质就是因为 eth_call 执行但不上链，不会改变区块链状态，所以不消耗 gas
+[https://viem.sh/docs/contract/simulateContract]
+![eth_call](eth_call.png)
