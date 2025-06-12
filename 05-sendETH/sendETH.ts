@@ -8,6 +8,7 @@ import {
   http,
   parseEther,
   TransactionRequest,
+  TransactionRequestBase,
   walletActions,
 } from "viem";
 import {
