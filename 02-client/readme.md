@@ -15,7 +15,7 @@ getClients.ts 文件会有两种 Client 的创建方式
 - 读取状态就对应 PublicClient 这些公共的方法
 - 写入改变状态就对应：WalletClient
 
-这里 WalletClient 也是可以读操作的，也就是说 WalletClient 对区块链的状态是可读可写的
+这里 WalletClient 也是可以读操作的，也就是说 WalletClient 对区块链的状态是可读可写的。但是要注意 viem 的 action 是分开的，PublicClient 中已经封装好的 actions 方法，walletClient 没有封装一边。两个 client 也是比较独立的，各干各的事。所以一般就同时设置两种 client，一种用来读一种用来写
 
 ## ethers vs viem 术语对比
 
