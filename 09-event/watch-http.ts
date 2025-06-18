@@ -1,4 +1,4 @@
-import { GetContractEventsReturnType } from "viem";
+import { getContract, GetContractEventsReturnType } from "viem";
 import { publicClient } from "../getClients";
 import { USDT_ABI, USDT_ADDRESS } from "./constants";
 type TransferLogs = GetContractEventsReturnType<typeof USDT_ABI, "Transfer">;
@@ -13,6 +13,15 @@ const unWatch = publicClient.watchContractEvent({
   eventName: "Transfer",
   onLogs,
 });
+const contract = getContract({
+  abi: USDT_ABI,
+  address: USDT_ADDRESS,
+  client: publicClient,
+});
+contract.watchEvent.Transfer(
+  { from: "0xc961145a54C96E3aE9bAA048c4F4D6b04C13916b" },
+  { onLogs: (logs) => console.log(logs) }
+);
 // 这里返回的是一个数组
 [
   {
@@ -64,6 +73,6 @@ const unWatch = publicClient.watchContractEvent({
     transactionIndex: 2,
   },
 ];
-// 如果从watchContractEvent源码去看的话，这里其实使用 区块时间作为间隔进行poll不断的轮训获取的 其实也是filter获取。这里单开一个源码的讲解吧，这样可以清晰的知道viem是如何处理的http和websocket
+// 如果从watchContractEvent源码去看的话（源码.md有讲解），这里其实使用 区块时间作为间隔进行poll不断的轮训获取的 其实也是filter获取。这里单开一个源码的讲解吧，这样可以清晰的知道viem是如何处理的http和websocket
 // 要知道一个区块是会有很多交易的 自然有可能一个区块链包含许多关于USDT的Transfer事件 所以直接返回的是logs数组
 //
