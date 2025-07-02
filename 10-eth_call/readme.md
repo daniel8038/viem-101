@@ -66,7 +66,7 @@ https://www.quicknode.com/docs/ethereum/eth_call
 
 # viem
 
-在 viem 中 模拟调用和 readContract 使用的都是`eth_call` 这里会返回相应的数据。
+在 viem 中 模拟调用`simulateContract` 和 readContract 使用的都是`eth_call` 这里会返回相应的数据。
 因为返回的是 bytes，所以 viem 使用 `decodeFunctionResult`解析了结果
 
 ```ts
@@ -80,6 +80,38 @@ const result = decodeFunctionResult({
 const values = decodeAbiParameters(abiItem.outputs, data);
 ```
 
+`estimateContractGas`·`estimateGas` 使用的是 `eth_estimateGas`
+
+```ts
+// estimateGas
+function estimateGas_rpc(parameters: {
+  block: any;
+  request: any;
+  rpcStateOverride: any;
+}) {
+  const { block, request, rpcStateOverride } = parameters;
+  return client.request({
+    method: "eth_estimateGas",
+    params: rpcStateOverride
+      ? [request, block ?? "latest", rpcStateOverride]
+      : block
+      ? [request, block]
+      : [request],
+  });
+}
+// estimateContractGas
+const gas = await getAction(
+  client,
+  estimateGas,
+  "estimateGas"
+)({
+  data: `${data}${dataSuffix ? dataSuffix.replace("0x", "") : ""}`,
+  to: address,
+  ...request,
+} as unknown as EstimateGasParameters);
+```
+
 # 代码实操
 
+只写着一个示例就够了，因为 viem 已经封装完了。没必要去这样搞
 eth_call.ts
