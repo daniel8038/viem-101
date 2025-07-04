@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Address, hexToSignature, parseSignature } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { verifyTypedData } from "viem";
 import { polygonAmoyWalletClient } from "../getClients";
@@ -39,8 +39,13 @@ async function signWithViem(message: string) {
       primaryType: "Message",
       message: value,
     });
+    // 有个方法叫：hexToSignature 也是做这个的  不过已经被viem弃用
+    const { r, s, v } = parseSignature(signature);
 
     console.log("签名成功:", signature);
+    console.log("r:", r);
+    console.log("s:", s);
+    console.log("v:", v);
     return signature;
   } catch (error) {
     console.error("签名失败:", error);

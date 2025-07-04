@@ -330,7 +330,7 @@ function pay(
 
 现在大概的合约流程就理顺了，我们知道 exactInputSingle 调用 exactInputInternal，exactInputInternal 调用 pool.swap, pool.swap 又会通过回调 SwapCallback 要求用户支付代币。
 
-### 交互
+### 授权
 
 我们要知道只要涉及到 token 交易都是需要授权的。uniswap 授权的方式有两种，一种是直接授权 swapRouter 一种就是 permit2 的方式
 
@@ -360,3 +360,179 @@ approve 这里就不说了，自己看一下 ERC20 标准的实现。
   这个单开一个章节吧，11-EIP712 章节，或者直接查看
 
   https://github.com/WTFAcademy/WTF-Ethers/blob/main/26_EIP712/readme.md
+
+  我们可以学到 Eip712 可以签署 结构化的数据，而且可以进行验证，判断签署者的地址
+
+**我们可以继续看 permit 了**
+
+EIP-2612—基于 ERC-712 的代币无 Gas 授权标准 --- permit
+
+ERC-2612 是对 ERC-20 的扩展，需要在代币合约中实现 permit 方法。
+
+[uni 代币 合约](https://etherscan.io/token/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984#code)
+
+这里删除了点代码 只保留 uni EIP-712 相关的
+重点在 permit 函数
+
+```solidity
+contract Uni {
+     string public constant name = "Uniswap";
+    // EIP-712 域分隔符的类型哈希，用于定义域的结构
+    bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
+
+    // EIP-712 委托结构的类型哈希，用于投票权委托
+    bytes32 public constant DELEGATION_TYPEHASH = keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
+
+    // EIP-712 permit 结构的类型哈希，用于授权签名
+    bytes32 public constant PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+
+    // 记录每个地址的签名随机数，用于防止重放攻击
+    mapping (address => uint) public nonces;
+
+    /**
+     * 通过签名触发从 owner 到 spender 的授权
+     * @param owner 授权方地址
+     * @param spender 被授权方地址
+     * @param rawAmount 授权的代币数量（2^256-1 表示无限授权）
+     * @param deadline 签名过期时间
+     * @param v 签名恢复字节
+     * @param r ECDSA 签名对的一半
+     * @param s ECDSA 签名对的另一半
+     */
+    function permit(address owner, address spender, uint rawAmount, uint deadline, uint8 v, bytes32 r, bytes32 s) external {
+        uint96 amount; // 定义 96 位的金额变量
+
+        // 如果 rawAmount 是最大值，则设置为 96 位最大值
+        if (rawAmount == uint(-1)) {
+            amount = uint96(-1);
+        } else {
+            // 否则检查金额是否超过 96 位限制
+            amount = safe96(rawAmount, "Uni::permit: amount exceeds 96 bits");
+        }
+
+        // 构造域分隔符，包含合约名称、链ID和合约地址
+        bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+
+        // 构造结构化数据哈希，包含所有 permit 参数和当前 nonce
+        bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, rawAmount, nonces[owner]++, deadline));
+
+        // 构造最终的签名消息摘要，遵循 EIP-712 标准
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+
+        // 从签名中恢复签名者地址
+        address signatory = ecrecover(digest, v, r, s);
+
+        // 确保签名有效（恢复的地址不为零地址）
+        require(signatory != address(0), "Uni::permit: invalid signature");
+
+        // 确保签名者就是授权方
+        require(signatory == owner, "Uni::permit: unauthorized");
+
+        // 确保签名未过期
+        require(now <= deadline, "Uni::permit: signature expired");
+
+        // 设置授权额度
+        allowances[owner][spender] = amount;
+
+        // 触发授权事件
+        emit Approval(owner, spender, amount);
+    }
+
+    // 获取当前链 ID 的内部函数
+    function getChainId() internal pure returns (uint) {
+        uint256 chainId; // 定义链 ID 变量
+        assembly { chainId := chainid() } // 使用内联汇编获取链 ID
+        return chainId; // 返回链 ID
+    }
+}
+```
+
+我们之前了解到，eip712 的签名结构就是`x19x01/domainSeparator/hashStruct(message)`
+
+- x19x01:是固定的
+
+- domainSeparator：其实就是 ts 代码里对 domain 签名，在合约中就是
+  `bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");`
+  `eccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(),address(this))`
+  那相应的 domain 不就是
+  ```ts
+  const domain = {
+    name: "Uniswap",
+    chainId: 1 //这个就是对应的链的chainID
+    verifyingContract: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984" // 合约地址
+  }
+  ```
+  然后要找的就是签名的结构化数据类型了 types
+  `bytes32 public constant PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");`
+  ` bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, rawAmount, nonces[owner]++, deadline));`
+  ```ts
+  types: {
+    const types = {
+      Permit: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    };
+    const message = {
+      owner: "0x...",
+      spender: "0x...",
+      value: "1000000000000000000",
+      nonce: 0,
+      deadline: 1672531200,
+    };
+  }
+  ```
+  你可以尝试使用 11 讲的 eip712.ts 的代码，看看 signature 个 r s v。
+
+然后再看一个 uniswapV2 的 router 合约里的，因为 v3 使用的是 permit2。所以这里只能拿 v2 举例
+
+先简单了解下 v2 的流动性操作：
+
+- 添加流动性流程：
+
+1. 用户提供 tokenA 和 tokenB
+2. 合约铸造 LP 代币给用户，
+3. LP 代币代表用户在池子中的份额
+
+- 移除流动性流程：
+
+1. 用户需要"燃烧"LP 代币
+2. 合约返还对应比例的 tokenA 和 tokenB
+3. 关键：需要授权的是 LP 代币
+
+pair 也可以说是 pool 合约 其实也是一个 ERO20 合约，当注入流动性的时候 这个 Pair 合约就会 mint 出 ero20 的代币作为 LP 代币。其实就是 pair 合约代币
+
+[pair 合约](https://sepolia.etherscan.io/address/0x7cd32470e0a0f744b8809b2415204c08a563abe8#code)
+
+从浏览器上就可以看出来，这是一个叫 uniswap V2 代币，可以在 readContract 调用下 name 函数。
+
+合约中也有这样一段代码
+`contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {}`
+
+```solidity
+  function removeLiquidityWithPermit(
+      address tokenA,
+      address tokenB,
+      uint liquidity,
+      uint amountAMin,
+      uint amountBMin,
+      address to,
+      uint deadline,
+      bool approveMax, uint8 v, bytes32 r, bytes32 s
+  ) external virtual override returns (uint amountA, uint amountB) {
+      address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
+      uint value = approveMax ? uint(-1) : liquidity;
+      // 这里我们之前 在 uni token 合约中看过permit函数 就是验证 v, r, s 如果通过 就会执行 allowances[owner][spender] = amount;
+      // 那这里就是如果签名验证成功 那lp token就会被授权给address(this) 数量是 value  但是我们只是在线下签名了一个 permit结构的数据 并没有调用 代币的 approve 函数。
+      // 那就是原来的 两笔交易 approve 和 removeLiquidity 直接变成了一笔交易 removeLiquidityWithPermit
+      IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+      (amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline);
+  }
+```
+
+#### permit2
+
+TODO：

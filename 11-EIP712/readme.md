@@ -15,7 +15,7 @@ EIP712 可以显示出结构化的数据
 在 eip712.html 中测试一下签名
 ![alt text](image.png)
 
-在 eip712.ts 里是 viem 的签名和验证
+在 eip712.ts 里是 viem 的签名和验证 以及得到 r s v
 
 https://viem.sh/docs/accounts/local/toAccount#signtypeddata
 
