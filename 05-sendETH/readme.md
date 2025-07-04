@@ -7,12 +7,15 @@
 # 实操
 
 这次不再用主网，换成其他的网络你可以换成 bsc 测试网或者其他的，比较好领取测试币的网络。这里就选择 polygon
-这是领水的连接[https://faucet.stakepool.dev.br/amoy]
+[这是领水的连接](https://faucet.stakepool.dev.br/amoy)
 
 发送 ETH 是不是就是写操作，那这里需要的就是 walletClient
 创建一个新钱包
+
 ```ts
+
 ```
+
 从私钥创建 walletClient
 
 ```ts

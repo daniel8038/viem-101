@@ -7,7 +7,7 @@
 执行函数调用但不上链，返回的结果是 bytes。
 
 这这里可以查看下
-https://www.quicknode.com/docs/ethereum/eth_call
+[rpc method](https://www.quicknode.com/docs/ethereum/eth_call)
 
 插一点 estimateGas 的知识，在 rpc 方法里还有一个 eth_estimateGas 用来做 gas 估算的。
 其实两者在底层上是没有什么区别的，在 geth 上使用的都是一种方式、但是具体是什么方法就不太了解了，可能是 doCall 方法。这是在底层做的，没必要关心。

@@ -3,7 +3,7 @@
 这一讲对我来说也是学习，在登链社区有对 EIP-7702 更好的更全面的知识讲述。
 
 这是我参考的原文：
-[https://learnblockchain.cn/article/15774]
+[登链社区 EIP-7702 文章](https://learnblockchain.cn/article/15774)
 
 简单来说，EIP-7702 使 EOA 临时获得智能合约的能力。
 
@@ -44,4 +44,4 @@ EIP-7702 的执行顺序：
 根据文章可以了解到，发送一笔 Eip7702 的交易的必要步骤：
 
 1. 通过`getCode({address:eoa.address})`检查地址是否已经创建委托
-2. 如果没有，则为EOA创建授权
+2. 如果没有，则为 EOA 创建授权

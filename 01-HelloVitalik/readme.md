@@ -2,7 +2,7 @@
 
 环境问题就按照 WTF 这里的去配置就好。
 
-[https://github.com/WTFAcademy/WTF-Ethers/blob/main/01_HelloVitalik/readme.md]
+[WTF]（https://github.com/WTFAcademy/WTF-Ethers/blob/main/01_HelloVitalik/readme.md）
 
 ## 首先来说，在 web3 交互需要考虑的问题无非是：
 
@@ -13,10 +13,10 @@
 
 不过web3把这个端点被称之为 rpc，同样的你只要按照特定的格式用 axios / fetch 去向 rpc 发送一个请求，rpc 会在区块链执行特定的程序。最后返回给你 response。-- request -- response
 
-API 端点请求示例：[https://www.quicknode.com/docs/ethereum/eth_accounts]
+API 端点请求示例：[quick node rpc method]（https://www.quicknode.com/docs/ethereum/eth_accounts）
 
 正常开发中，不可能自己去用 axios / fetch 自己封装 rpc 的请求。直接使用 web3 开源库就行啦。
-Viem:[https://viem.sh/docs/ethers-migration#jsonrpcprovider]
+Viem:[viem client](https://viem.sh/docs/ethers-migration#jsonrpcprovider)
 
 # 实操
 

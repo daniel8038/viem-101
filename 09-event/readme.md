@@ -18,7 +18,7 @@
   emit Transfer(from, to, amount);
   ```
 - 区块浏览器中的体现
-  [https://amoy.polygonscan.com/tx/0x4f622c11592f4a3abeb335578eed63e74bc9ababa164bfccf66f6eefb037b17d#eventlog]
+  https://amoy.polygonscan.com/tx/0x4f622c11592f4a3abeb335578eed63e74bc9ababa164bfccf66f6eefb037b17d#eventlog
 
   ![](./images/scan.png)
 

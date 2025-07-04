@@ -8,7 +8,7 @@
 
 0xD32977ac92E7FA5Ca2427d8F874dd604552A2A19
 
-[https://amoy.polygonscan.com/token/0xd32977ac92e7fa5ca2427d8f874dd604552a2a19]
+https://amoy.polygonscan.com/token/0xd32977ac92e7fa5ca2427d8f874dd604552a2a19
 
 从区块浏览器的交易记录上可以看到有一个 mint 的方法被调用。
 ![mint](./image/mint.png)

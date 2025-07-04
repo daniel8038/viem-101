@@ -2,7 +2,7 @@ EIP-712 (Ethereum Improvement Proposal 712) 是以太坊的一个重要标准，
 
 https://eips.ethereum.org/EIPS/eip-712
 
-https://learnblockchain.cn/article/13781
+[登链社区文章](https://learnblockchain.cn/article/13781)
 
 总结一下：
 
@@ -17,7 +17,7 @@ EIP712 可以显示出结构化的数据
 
 在 eip712.ts 里是 viem 的签名和验证 以及得到 r s v
 
-https://viem.sh/docs/accounts/local/toAccount#signtypeddata
+[viem signtypeddata](https://viem.sh/docs/accounts/local/toAccount#signtypeddata)
 
 ```solidity
 contract MyContract {

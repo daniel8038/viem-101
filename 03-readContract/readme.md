@@ -129,13 +129,13 @@ readContract 和 contract.read 没什么区别
 ![calldata](./image/calldata.png)
 
 顺便在简单说一下这个 call 函数,这里可以看到，call 中使用的是 eth_call 这个 method
-[https://www.quicknode.com/docs/ethereum/eth_call]
+[rpc eth_call method](https://www.quicknode.com/docs/ethereum/eth_call)
 
 简单来说，eth_call 就是执行函数的调用但不上链，不会改变链上状态，所以这也是模拟调用实现 gas 优化的原理(之后会讲到). 不过在 rpc 现在还有一个`"method":"eth_estimateGas",` 也可以得到 gas 数据
 
-https://www.quicknode.com/docs/ethereum/eth_estimateGas
+[rpc eth_estimateGas method](https://www.quicknode.com/docs/ethereum/eth_estimateGas)
 
 viem 官方文档也提到，This simulateContract function does not require gas to execute and does not change the state of the blockchain. It is almost identical to readContract, but also supports contract write functions.
 本质就是因为 eth_call 执行但不上链，不会改变区块链状态，所以不消耗 gas
-[https://viem.sh/docs/contract/simulateContract]
+[viem simulateContract](https://viem.sh/docs/contract/simulateContract)
 ![eth_call](./image/eth_call.png)

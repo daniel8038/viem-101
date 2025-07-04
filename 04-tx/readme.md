@@ -35,7 +35,7 @@
 
 - Legacy 模式使用 gasPrice gasLimit
 - EIP-1559 一种新的 GAS 结构: maxFeePerGas maxPriorityFeePerGas
-  EIP-1159 解释[https://learnblockchain.cn/article/6914]
+  [EIP-1159 解释](https://learnblockchain.cn/article/6914)
 
 | 字段                   | 说明                | 作用                     |
 | ---------------------- | ------------------- | ------------------------ |

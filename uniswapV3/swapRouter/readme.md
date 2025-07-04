@@ -1,10 +1,10 @@
 这是 相关的方法
 
-https://sepolia.etherscan.io/address/0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E#writeProxyContract
+[区块链浏览器连接](https://sepolia.etherscan.io/address/0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E#writeProxyContract)
 
 这是 github
 
-https://github.com/Uniswap/swap-router-contracts/blob/main/contracts/SwapRouter02.sol
+[合约源码](https://github.com/Uniswap/swap-router-contracts/blob/main/contracts/SwapRouter02.sol)
 
 有些方法是从其他的合约继承来的,我们一个一个的进行简单的解读，最后在讲解 swapRouter 上最主要的方法
 
@@ -350,7 +350,7 @@ approve 这里就不说了，自己看一下 ERC20 标准的实现。
 
 先来讲讲 permit
 
-这是一篇文章 https://learnblockchain.cn/article/14070
+这是一篇文章 [登链社区 permit 文章](https://learnblockchain.cn/article/14070)
 
 我们知道在合约的代币交易程序，第一步都是要先授权相应的代币。而且一般都是 uint256 的最大值。
 这存在什么问题那？
