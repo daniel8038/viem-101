@@ -332,7 +332,11 @@ function pay(
 
 ### 授权
 
-我们要知道只要涉及到 token 交易都是需要授权的。uniswap 授权的方式有两种，一种是直接授权 swapRouter 一种就是 permit2 的方式
+我们要知道只要涉及到 token 交易都是需要授权的。uniswap 授权的方式有 3 种，
+
+1. 直接调用 approve 授权 swapRouter
+2. permit 的方式,这个在 V2 的流动性操作上有相关的处理
+3. 也是比较重要的处理，就是 uniswapV3 的 permit2 的处理方式
 
 这里就先补充 EIP712 的知识。
 
