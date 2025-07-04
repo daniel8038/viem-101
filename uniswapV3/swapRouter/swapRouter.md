@@ -338,4 +338,25 @@ function pay(
 
 https://github.com/WTFAcademy/WTF-Ethers/blob/main/26_EIP712/readme.md
 
-TODO：approve/permit/permit2
+授权方式：approve/permit/uniswap permit2
+
+approve 这里就不说了，自己看一下 ERC20 标准的实现。
+
+#### permit
+
+先来讲讲 permit
+
+这是一篇文章 https://learnblockchain.cn/article/14070
+
+我们知道在合约的代币交易程序，第一步都是要先授权相应的代币。而且一般都是 uint256 的最大值。
+这存在什么问题那？
+
+- approve 也是需要 gas 的，如果不使用无限授权的话，每一次都是需要 approve 的，每一次都需要消耗 gas。
+- 无限的代币授权如果被黑客钓鱼利用，那所有的代币资金都会被转走。
+
+针对这两个问题就出现 permit 的解决办法，使用了 Eip712 和 EIP2612
+
+- 什么是 Eip712 ？
+  这个单开一个章节吧，11-EIP712 章节，或者直接查看
+
+  https://github.com/WTFAcademy/WTF-Ethers/blob/main/26_EIP712/readme.md
