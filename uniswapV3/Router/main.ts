@@ -5,9 +5,12 @@ import {
   USDC_DECIMALS,
   DAI_ADDRESS,
   NOTMANY_ADDRESS,
+  SWAP_ROUTER_ADDRESS,
 } from "../constants";
 import { walletClient } from "../getClient";
 import { swapRouter } from "./swapRouter";
+import { deleteApprove } from "../approve";
+import { signPermit } from "../utils/getPermit";
 
 async function main() {
   // await swapRouter.approvalMax("0x8BEbFCBe5468F146533C182dF3DFbF5ff9BE00E2");
@@ -28,6 +31,9 @@ async function main() {
     sqrtPriceLimitX96: 0n,
   });
   */
+  /////////////////////////////////////////////
+  //  exactInput      //
+  ////////////////////////////////////////////
   /*
   //多跳路径 这个是一个bytes
   const path = encodePacked(
@@ -40,6 +46,35 @@ async function main() {
     amountIn: parseUnits("200", USDC_DECIMALS),
     amountOutMinimum: 0n,
   });
+  */
+  /////////////////////////////////////////////
+  //  permit      //
+  ////////////////////////////////////////////
+  // 首先要取消所有的实权
+  // await deleteApprove(USDC_ADDRESS, SWAP_ROUTER_ADDRESS);
+  // USDC permit parameters for selfPermit
+  /*
+  let permitParams = await signPermit(USDC_ADDRESS, {
+    owner: walletClient.account.address,
+    spender: SWAP_ROUTER_ADDRESS,
+    value: parseUnits("10", USDC_DECIMALS),
+    deadline: BigInt(Math.floor(Date.now() / 1000) + 60 * 20),
+  });
+  let swapExactInputSingleParams = {
+    tokenIn: USDC_ADDRESS,
+    tokenOut: WETH_ADDRESS,
+    fee: 100,
+    recipient: walletClient.account.address,
+    amountIn: parseUnits("10", USDC_DECIMALS),
+    amountOutMinimum: 0n,
+    sqrtPriceLimitX96: 0n,
+  };
+  // 这里如果报错 STF 可能是 USDC 代币余额不足了
+  // https://sepolia.etherscan.io/tx/0xaf99516525609fec9f5a7dc96a9bebd0f34fab4c1fe28e932fa6203fdb52a7c5
+  await swapRouter.permitSwapExactInputSingle(
+    permitParams,
+    swapExactInputSingleParams
+  );
   */
 }
 main().catch((err) => {

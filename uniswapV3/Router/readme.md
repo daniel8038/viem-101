@@ -593,6 +593,40 @@ const path = encodePacked(
 
 到这里 exactInput 也解释和交互完了，exactOutput 就不解释了。无非就是第 5 个参数从 amountIn 变成了 amountOut。也就是要输出多少的 token。之后合约会自动扣掉需要的 tokenIn。
 
+对于 swap 还差最后一个没讲，就是使用 permit 进行 swap，减少授权这一笔交易。
+
+## 使用 permit 进行 swap
+
+### 首先我们先理解几个 permit 相关的函数
+
+1. selfPermit()
+
+作用: 使用用户的签名来授权代币给 SwapRouter
+好处: 用户只需要签名，不需要单独的授权交易
+流程: 签名 → 一笔交易完成授权+操作
+
+2. selfPermitIfNecessary()
+
+作用: 只有在需要时才执行 permit
+智能: 检查当前授权，不够才执行 permit
+避免: 重复授权导致的错误
+
+3. selfPermitAllowed()
+
+作用: 针对特殊代币（如 DAI）的 permit 方式
+区别: 使用 allowed 而不是标准的 approve 方式
+
+4. selfPermitAllowedIfNecessary()
+
+作用: 结合上面两个的智能版本
+用途: 对 DAI 等代币的条件性 permit
+
+一共 4 个 permit 相关的函数，其实 permit 代币并不常见，老的代币无法升级，新的代币有的并不添加 permit。所以我们这里直接使用 selfPermit，和 USDC 代币做例子就行了。其他的就不一一敲代码了
+
+在 uniswap 官方的 sdk 文件写的更加的完整
+
+https://github.com/Uniswap/sdks/tree/main/sdks/v3-sdk
+
 # universalRouter
 
 [uniswap universalRouter docs]（https://docs.uniswap.org/contracts/universal-router/technical-reference）

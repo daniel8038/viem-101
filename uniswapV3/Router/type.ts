@@ -12,3 +12,6 @@ export type ExactInputSingleParams = Parameters<
 export type ExactInputParams = Parameters<
   SwapRouterContract["write"]["exactInput"]
 >[0][0];
+export type PermitParams = Parameters<
+  SwapRouterContract["write"]["selfPermit"]
+>[0];
