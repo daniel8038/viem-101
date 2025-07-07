@@ -23,7 +23,7 @@ contract SwapRouter02 is ISwapRouter02, V2SwapRouter, V3SwapRouter, ApproveAndCa
 
 # approveMax...
 
-这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。这个函数不是用户需要交互的 没什么需要学习的。这是合约自己使用的。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。
+这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。应该是为用户通过 SwapRouter02 调用 NonfungiblePositionManager 流动性操作准备的
 
 ts 代码中有交互示例，但是没什么用 这里不是用户该操作的
 
@@ -549,7 +549,29 @@ pair 也可以说是 pool 合约 其实也是一个 ERO20 合约，当注入流�
 
 这里的交互那？因为还没有讲到 swapRouter02 的 selfPermit 和 mutilcall，所以这里的代币的授权就是 ERC20 的原生的 approve 函数。
 
+可以先通过 测试网模式 先兑换出来点 USDC  
+![测试网模式](./images/测试网模式.png)
 
+**注意代码只是用来学习 Router，并不会完全考虑所有的情况，你想尝试其他情况，你需要自己改一些参数，添加一些方法测试**
+[代码在这里](https://github.com/daniel8038/viem-101/blob/main/uniswapV3/Router/swapRouter.ts)
+
+## exactInput
+
+这个主要是做多跳的，注意区块是有 gas 限制的，hop 多的话 执行不完的。
+注意 path 就行
+
+可以从 factory 找 fee 和 token address
+
+```ts
+const path = encodePacked(
+  ["address", "uint24", "address", "uint24", "address"],
+  [USDC_ADDRESS, 100, WETH_ADDRESS, 3000, NOTMANY_ADDRESS]
+);
+```
+
+[代码在这里的](https://github.com/daniel8038/viem-101/blob/main/uniswapV3/Router/swapRouter.ts)
+
+到这里 exactInput 也解释和交互完了，exactOutput 就不解释了。无非就是第 5 个参数从 amountIn 变成了 amountOut。也就是要输出多少的 token。之后合约会自动扣掉需要的 tokenIn。
 
 # universalRouter
 
