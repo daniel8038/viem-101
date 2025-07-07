@@ -23,9 +23,7 @@ contract SwapRouter02 is ISwapRouter02, V2SwapRouter, V3SwapRouter, ApproveAndCa
 
 # approveMax...
 
-这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。应该是为用户通过 SwapRouter02 调用 NonfungiblePositionManager 流动性操作准备的
-
-ts 代码中有交互示例，但是没什么用 这里不是用户该操作的
+这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。是为用户通过 SwapRouter02 调用 NonfungiblePositionManager 流动性操作准备的
 
 ```solidity
  function approveMax(address token) external payable override {
@@ -57,9 +55,29 @@ ts 代码中有交互示例，但是没什么用 这里不是用户该操作的
     }
 ```
 
+这里 approveMax 以及其他的 approveMaxMinusOne 等等 都是为了流动性操作准备的。直接在 SwapRouter02 上进行流动性操作 不再需要去 NonfungiblePositionManager 上调用。
+
+具体的过程应该是使用 multicall 方法实现的，
+
+那 multicall 里的 calldatas 的函数调用就是。
+
+1. 用户先使用 pull 函数转移代币到 SwapRouter02 合约
+2. approveMax 进行代币授权：让 NonfungiblePositionManager 可以使用 swapROuter02 中的代币
+3. 执行流动性操作
+
+这个 pull 函数使用了 safeTransferFrom，证明在执行上边 1 之前，要求用户将代币授权给 SwapRouter02
+
+```solidity
+function pull(address token, uint256 value) external payable override {
+        TransferHelper.safeTransferFrom(token, msg.sender, address(this), value);
+    }
+```
+
+总的来看这种方式，更加的费劲。不如直接调用 NonfungiblePositionManager 合约进行交互。所以就不考虑写在 swapRouter02 上进行流动性操作了
+
 # callPositionManager
 
-这是通过 calldata 调用 callPositionManager 上的函数的，也不必太关注。也是为了合约里自己处理的。关键看后续的函数
+这是通过 calldata 调用 callPositionManager 上的函数的。 应该也是离不开 multicall 的
 
 ```solidity
     function callPositionManager(bytes memory data) public payable override returns (bytes memory result) {
@@ -76,6 +94,8 @@ ts 代码中有交互示例，但是没什么用 这里不是用户该操作的
         }
     }
 ```
+
+总的来看这种方式，更加的费劲。不如直接调用 NonfungiblePositionManager 合约进行交互
 
 # swapRouter 核心函数
 

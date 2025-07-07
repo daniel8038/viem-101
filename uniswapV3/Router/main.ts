@@ -28,6 +28,7 @@ async function main() {
     sqrtPriceLimitX96: 0n,
   });
   */
+  /*
   //多跳路径 这个是一个bytes
   const path = encodePacked(
     ["address", "uint24", "address", "uint24", "address"],
@@ -39,6 +40,7 @@ async function main() {
     amountIn: parseUnits("200", USDC_DECIMALS),
     amountOutMinimum: 0n,
   });
+  */
 }
 main().catch((err) => {
   console.log("主程序出错：", err);
