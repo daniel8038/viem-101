@@ -13,8 +13,9 @@ import { deleteApprove } from "../approve";
 import { signPermit } from "../utils/getPermit";
 
 async function main() {
+  // 注意这里没有做balanceOf检查余额，正常业务第一个要做的都是检查用户余额
+  // approvalMax不必关注，主要还是配合multiCall  在swapRouter02直接操作流动性函数的，一般直接交互 NonfungiblePositionManager流动性管理合约 不再swapRouter02上操作
   // await swapRouter.approvalMax("0x8BEbFCBe5468F146533C182dF3DFbF5ff9BE00E2");
-  // await deleteApprove(USDC_ADDRESS, SWAP_ROUTER_ADDRESS);
   /////////////////////////////////////////////
   //  exactInputSingle 执行 USDC 换 WETH      //
   ////////////////////////////////////////////
