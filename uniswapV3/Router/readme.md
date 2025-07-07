@@ -623,9 +623,15 @@ const path = encodePacked(
 
 一共 4 个 permit 相关的函数，其实 permit 代币并不常见，老的代币无法升级，新的代币有的并不添加 permit。所以我们这里直接使用 selfPermit，和 USDC 代币做例子就行了。其他的就不一一敲代码了
 
+### permit 结合 multiCall 执行 swap
+
+[代码在这](https://github.com/daniel8038/viem-101/blob/main/uniswapV3/Router/main.ts#L74)
+
 在 uniswap 官方的 sdk 文件写的更加的完整
 
 https://github.com/Uniswap/sdks/tree/main/sdks/v3-sdk
+
+到这里其实核心函数已经做完了，还有一些 uniswapV2 的函数就不讲了，下边要讲的就是通用 router(universalRouter)的核心函数了，其实就一个 execute 函数，不过 universalRouter 还是蛮麻烦的
 
 # universalRouter
 
