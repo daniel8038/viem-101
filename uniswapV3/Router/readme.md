@@ -23,7 +23,9 @@ contract SwapRouter02 is ISwapRouter02, V2SwapRouter, V3SwapRouter, ApproveAndCa
 
 # approveMax...
 
-这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。是为用户通过 SwapRouter02 调用 NonfungiblePositionManager 流动性操作准备的
+这个其实就是授权给合约的 unit256 的最大值，我们直接看合约中的实现就行。就是 swapRouter 授权 positionManager 合约可以无限使用这个 swapRouter 所拥有的 token。是为用户通过 SwapRouter02 调用 NonfungiblePositionManager 流动性操作准备的。
+
+不用在意这个函数，一般直接交互 NonfungiblePositionManager 这个合约，不需要在 swapRouter02 上操作
 
 ```solidity
  function approveMax(address token) external payable override {
