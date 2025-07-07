@@ -22,14 +22,14 @@ contract AllowanceTransfer is IAllowanceTransfer, EIP712 {
     // 存储的数据包含允许的金额、授权过期时间和 nonce
     mapping(address => mapping(address => mapping(address => PackedAllowance))) public allowance;
 
-    // 直接授权函数
+    // approve 可以直接调用来更新 msg.sender 对 “被授权地址” 的 “授权数量” 和 “过期时间”
     function approve(address token, address spender, uint160 amount, uint48 expiration) external {
         PackedAllowance storage allowed = allowance[msg.sender][token][spender]; // 获取存储的授权信息
         allowed.updateAmountAndExpiration(amount, expiration); // 更新授权金额和过期时间
         emit Approval(msg.sender, token, spender, amount, expiration); // 发出授权事件
     }
 
-    // 单个代币的 permit 授权函数
+    // 单个代币的 permit 授权函数  其实就相当于之前说的eip712 permit 是一样的形式
     function permit(address owner, PermitSingle memory permitSingle, bytes calldata signature) external {
         if (block.timestamp > permitSingle.sigDeadline) revert SignatureExpired(permitSingle.sigDeadline); // 检查签名是否过期
 
@@ -93,7 +93,7 @@ contract AllowanceTransfer is IAllowanceTransfer, EIP712 {
         ERC20(token).safeTransferFrom(from, to, amount);
     }
 
-    // 紧急锁定函数，立即撤销指定的授权
+    // 紧急锁定函数，立即撤销指定的授权 lockdown 通过将 “授权数量” 重置为 0 来锁定授权
     function lockdown(TokenSpenderPair[] calldata approvals) external {
         address owner = msg.sender; // 获取调用者地址
         // 撤销每对支出者和代币的授权
@@ -128,6 +128,7 @@ contract AllowanceTransfer is IAllowanceTransfer, EIP712 {
     // 设置金额、过期时间和 nonce 的新值
     // 检查签名的 nonce 是否等于当前 nonce，然后将 nonce 值增加 1
     // 发出 Permit 事件
+    // _updateApproval 实现了对 “nonce” 的验证，更新了 “授权者” 对 “被授权地址” 的 token “授权数量”、“过期时间” 和 “nonce”
     function _updateApproval(PermitDetails memory details, address owner, address spender) private {
         uint48 nonce = details.nonce; // 获取 nonce
         address token = details.token; // 获取代币地址

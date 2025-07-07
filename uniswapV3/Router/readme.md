@@ -98,7 +98,7 @@ ts 代码中有交互示例，但是没什么用 这里不是用户该操作的
 - **功能**：指定输出代币数量，单池交换
 - **场景**：A → B 直接交换，知道要买多少 B，想知道需要卖多少 A
 
-### exactOutputSingle
+### exactOutput
 
 - **功能**：指定输出代币数量，多池路径交换
 - **场景**：A → B → C 多跳交换，知道要买多少 C，想知道需要卖多少 A
@@ -332,7 +332,7 @@ function pay(
 
 现在大概的合约流程就理顺了，我们知道 exactInputSingle 调用 exactInputInternal，exactInputInternal 调用 pool.swap, pool.swap 又会通过回调 SwapCallback 要求用户支付代币。
 
-### 授权
+## 授权
 
 我们要知道只要涉及到 token 交易都是需要授权的。uniswap 授权的方式有 3 种，
 
@@ -348,7 +348,7 @@ https://github.com/WTFAcademy/WTF-Ethers/blob/main/26_EIP712/readme.md
 
 approve 这里就不说了，自己看一下 ERC20 标准的实现。
 
-#### permit
+### permit
 
 先来讲讲 permit
 
@@ -539,9 +539,16 @@ pair 也可以说是 pool 合约 其实也是一个 ERO20 合约，当注入流�
   }
 ```
 
-#### permit2
+### permit2
 
 这里东西有点多，也单开一讲吧。在 12-permit2
+
+## exactInputSingle
+
+在明白了授权之后，就可以继续学习 exactInputSingle 的交互了。
+
+这里的交互那？因为还没有讲到 swapRouter02 的 selfPermit 和 mutilcall，所以这里的代币的授权就是 ERC20 的原生的 approve 函数。
+
 
 
 # universalRouter
