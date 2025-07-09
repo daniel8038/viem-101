@@ -4,6 +4,10 @@
 要注意文章里的私钥，是完全不会有真实资金操作的，写完之后就会删除这个钱包，所以上传进了仓库。
 **个人一定一定不要上传进 github，资金会全部被转走，一定一定设置一个 dotenv，把私钥放进 env 文件，.gitignore 添加.env 文件**
 
+也可以直接看 uniswapV3 的讲解，UniswapV3 的讲解主做外围合约交互，当然也会讲解合约内的一些知识。如果后续有时间的话，我打算扒一下 uniswap 的开源的智能路由的代码，逐行讲解一下。
+
+[uniswapV3 代码在这](https://github.com/daniel8038/viem-101/blob/main/uniswapV3/Router/main.ts)
+
 ## 📖 项目简介
 
 这是一个基于 **WTF Academy** 的《重学 ethers.js》课程改编的 **Viem** 学习手册。将经典的 ethers.js 教程用现代化的 viem 库重新实现，帮助开发者快速掌握 viem 的使用方法。
